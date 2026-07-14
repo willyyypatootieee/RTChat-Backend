@@ -1,6 +1,6 @@
 # NestJS MongoDB API
 
-A NestJS API connected to MongoDB through Mongoose. The project includes a
+A NestJS API connected to MongoDB 7 through Mongoose. The project includes a
 production Docker image and a Docker Compose stack for running the API and
 database together.
 
@@ -13,29 +13,33 @@ Choose one of these setups:
 
 ## Run with Docker
 
-Build and start the API and MongoDB:
+Build and start the backend and MongoDB together:
 
 ```bash
-docker compose up --build
+docker compose up --build --remove-orphans
 ```
 
-The services will be available at:
+This single command starts both Compose services. Their logs are attached to
+the same terminal. The services will be available at:
 
 - API: `http://localhost:3000`
 - MongoDB: `mongodb://localhost:27017/new`
 
 MongoDB data is stored in the persistent `mongo_data` Docker volume.
 
+The Compose stack uses MongoDB 7 because MongoDB 8.x currently has a known
+startup incompatibility with Linux kernels 6.19 and newer.
+
 Run the stack in the background:
 
 ```bash
-docker compose up --build -d
+docker compose up --build --remove-orphans -d
 ```
 
-View logs:
+View both backend and MongoDB logs:
 
 ```bash
-docker compose logs -f
+docker compose logs -f backend mongo
 ```
 
 Stop the services while preserving database data:
