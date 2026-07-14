@@ -1,5 +1,5 @@
 services:
-  api:
+  backend:
     build:
       context: .
       target: production
@@ -11,11 +11,24 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:3000/graphql', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query: '{ __typename }' }) }).then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     init: true
     restart: unless-stopped
 
   mongo:
-    image: mongo:8.0
+    # MongoDB 8.x currently cannot start on Linux kernels 6.19 and newer.
+    image: mongo:7.0
     ports:
       - "27017:27017"
     volumes:
