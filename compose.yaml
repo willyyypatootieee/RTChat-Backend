@@ -5,6 +5,7 @@ services:
       target: production
     environment:
       MONGODB_URI: mongodb://mongo:27017/new
+      DB_NAME: new
       PORT: 3000
     ports:
       - "3000:3000"
