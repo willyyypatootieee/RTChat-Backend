@@ -1,5 +1,5 @@
 import { UsersRepository } from './users.repository';
-import { Injectable } from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -27,17 +27,26 @@ export class UsersService {
     return this.UsersRepository.findOne({ _id });
   }
 
-  async update(_id: string, updateUserInput: UpdateUserInput) {
-    const { password, ...rest } = updateUserInput;
+  async update(updateUserInput: UpdateUserInput) {
+    const { email, password } = updateUserInput;
+    const updateData: { password?: string } = {};
 
-    return  this.UsersRepository.findOneAndUpdate({_id},{
-      $set: {
-        ...rest,
-        ...(password && { password: await this.hashPassword(password) }),
-      },
-    },
-  );
-}
+    if (password) {
+      updateData.password = await this.hashPassword(password);
+    }
+
+    const updatedUser = await this.UsersRepository.findOneAndUpdate(
+        { email },
+        {
+          $set: updateData,
+        },
+    );
+
+    if (!updatedUser) {
+      throw new NotFoundException(`User with email ${email} not found`);
+    }
+    return updatedUser;
+  }
 
   async remove(_id: string) {
     return this.UsersRepository.findOneAndDelete({ _id });
