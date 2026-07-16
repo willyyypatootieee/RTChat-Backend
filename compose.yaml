@@ -6,9 +6,9 @@ services:
     environment:
       MONGODB_URI: mongodb://mongo:27017/new
       DB_NAME: new
-      PORT: 3000
+      PORT: 3001
     ports:
-      - "3000:3000"
+      - "3001:3001"
     depends_on:
       mongo:
         condition: service_healthy
@@ -18,7 +18,7 @@ services:
           "CMD",
           "node",
           "-e",
-          "fetch('http://localhost:3000/graphql', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query: '{ __typename }' }) }).then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))",
+          "fetch('http://localhost:3001/graphql', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query: '{ __typename }' }) }).then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))",
         ]
       interval: 10s
       timeout: 5s

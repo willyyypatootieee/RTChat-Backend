@@ -24,6 +24,6 @@ RUN corepack enable \
 COPY --from=build /app/dist ./dist
 
 USER node
-EXPOSE 3000
+EXPOSE 3001
 
 CMD ["node", "dist/src/main.js"]
