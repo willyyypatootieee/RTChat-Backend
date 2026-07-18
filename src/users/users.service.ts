@@ -51,4 +51,16 @@ export class UsersService {
   async remove(_id: string) {
     return this.UsersRepository.findOneAndDelete({ _id });
   }
+
+  async  verifyUser(email: string, password: string) {
+    const user = await this.UsersRepository.findOne({ email });
+
+    const passwordIsValid = await bcrypt.compare(password, user.password);
+
+    if (!passwordIsValid) {
+      throw new NotFoundException(`Credentials are not valid!`);
+    }
+    return user;
+
+  }
 }
